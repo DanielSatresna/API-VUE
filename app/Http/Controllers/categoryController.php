@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\ApiModel;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
-class ApiController extends Controller
+class categoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +13,7 @@ class ApiController extends Controller
      */
     public function index()
     {
-        $posts = ApiModel::latest()->get();
+        $posts = Category::latest()->get();
         return response([
             'success' => true,
             'message' => 'List semua Post',
@@ -39,25 +39,23 @@ class ApiController extends Controller
      */
     public function store(Request $request)
     {
-        $image_path = $request->file('image')->store('image', 'public');
-            $post = ApiModel::create([ 
-            'title' => $request->title,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
-            'image' => $image_path
-        ]);
+        $image_path = $request->file('category_image')->store('image', 'public');
+        $post = Category::create([ 
+        'category_name' => $request->category_name,
+        'category_image' => $image_path
+    ]);
 
-        if ($post){
-            return response()->json([
-                'success' => true,
-                'message' => 'Post Berhasil di Simpan',
-            ], 200);
-        }else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Post Gagal Disimpan!!',
-            ], 400);
-        }
+    if ($post){
+        return response()->json([
+            'success' => true,
+            'message' => 'Post Berhasil di Simpan',
+        ], 200);
+    }else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Post Gagal Disimpan!!',
+        ], 400);
+    }
     }
 
     /**
@@ -68,7 +66,7 @@ class ApiController extends Controller
      */
     public function show($id)
     {
-        $post = ApiModel::whereId($id)->first();
+        $post = Category::whereId($id)->get()->load(['apiModel']);
 
         if ($post) {
             return response()->json([
@@ -105,27 +103,7 @@ class ApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = ApiModel::findOrFail($id);
-
-        if($post){
-            $post->update([
-                'title' =>    $request->title,
-                'price' =>  $request->price,
-                'category_id' => $request->category_id,
-                'image' =>$request->image,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Post telah di Update',
-                'data' => $post
-            ], 200);
-        }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Post tidak ditemukn',
-        ], 404);
+        //
     }
 
     /**
@@ -136,21 +114,6 @@ class ApiController extends Controller
      */
     public function destroy($id)
     {
-        $product=ApiModel::find($id);
-        if($product){
-
-            $file = str_replace('\\', '/', public_path('storage/')).$product->image;
-            unlink($file);
-            $product->delete();
-
-            return response()->json([
-                'message' => 'Product berhasil dihapus',
-                'code' =>200
-            ]);
-            return response()->json([
-                'message'=>'product dengan id:$id tidak tersedia',
-                'code' => 400
-            ]);
-        }
+        //
     }
 }

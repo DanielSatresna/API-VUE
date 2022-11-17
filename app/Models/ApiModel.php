@@ -9,5 +9,5 @@ class ApiModel extends Model
 {
     use HasFactory;
     protected $table = 'api_models';
-    protected $fillable = ['title', 'price', 'image',];
+    protected $fillable = ['title', 'price', 'image', 'category_id'];
 }

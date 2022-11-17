@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('api_models', function (Blueprint $table) {
+        Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('category')->onDelete('cascade');
-            $table->string('title');
-            $table->integer('price');
-            $table->string('image');
+            $table->string('category_name')->unique();
+            $table->string('category_image');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('api_models');
+        //
     }
 };
