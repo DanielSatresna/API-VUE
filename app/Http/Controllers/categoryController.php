@@ -13,7 +13,7 @@ class categoryController extends Controller
      */
     public function index()
     {
-        $posts = Category::latest()->get();
+        $posts = Category::get();
         return response([
             'success' => true,
             'message' => 'List semua Post',
@@ -103,7 +103,25 @@ class categoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Category::findOrFail($id);
+
+        if($post){
+            $post->update([
+                'category_name' =>    $request->category_name,
+                'category_image' =>$request->category_image,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Post telah di Update',
+                'data' => $post
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Post tidak ditemukn',
+        ], 404);
     }
 
     /**
@@ -114,6 +132,21 @@ class categoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $categories=Category::find($id);
+        if($categories){
+
+            $file = str_replace('\\', '/', public_path('storage/')).$categories->category_image;
+            unlink($file);
+            $categories->delete();
+
+            return response()->json([
+                'message' => 'Kategori berhasil dihapus',
+                'code' =>200
+            ]);
+            return response()->json([
+                'message'=>'Kategori dengan id:$id tidak tersedia',
+                'code' => 400
+            ]);
+        }
     }
 }

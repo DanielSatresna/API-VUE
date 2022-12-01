@@ -40,6 +40,7 @@ class ApiController extends Controller
     public function store(Request $request)
     {
         $image_path = $request->file('image')->store('image', 'public');
+        
             $post = ApiModel::create([ 
             'title' => $request->title,
             'price' => $request->price,
